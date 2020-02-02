@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const Weather = ({ capital, url }) => {
+const Weather = ({ capital }) => {
 
     const [location, setLocation] = useState([])
     const [current, setCurrent] = useState([])
