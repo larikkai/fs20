@@ -53,26 +53,22 @@ const App = () => {
   }
 
   const updateNumber = (id, newNumber) => {
-    const person = persons.find(p => p.id === id)
+    const person = persons.find(person => person.id === id)
     const changedPerson = { ...person, number: newNumber }
   
     personService
       .update(id, changedPerson)
       .then(changedPerson => {
         setPersons(persons.map(person => person.id !== id ? person : changedPerson))
-        setNewName('')
-        setNewNumber('')
-        setErrorMessage(`Person ${newName} number changed to ${newNumber}`)
+      })
+      .catch(error => {
+        setErrorMessage(`Information of ${newName} has been already removed from server`)
+        setStyle('error')
         handleErrorMessage()
-        })
-        .catch(error => {
-          setErrorMessage(`Information of ${newName} has been already removed from server`)
-          setStyle('error')
-          handleErrorMessage()
-          setPersons(persons.filter(p => p.id !== id))
-          setNewName('')
-          setNewNumber('')
-        })
+        setPersons(persons.filter(person => person.id !== id))
+      })
+      setNewName('')
+      setNewNumber('')
     }
 
   const deletePerson = ( id ) => {
