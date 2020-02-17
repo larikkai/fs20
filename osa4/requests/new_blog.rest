@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzEwMTd9.IHd6DVkT7PPJTMgAlCG0ajB7eVwJQ0ZQHGS3htVM76k
 
 {
     "author": "Rambo",
