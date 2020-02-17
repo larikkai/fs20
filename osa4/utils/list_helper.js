@@ -1,4 +1,4 @@
-const dummy = (blogs) => {
+const dummy = () => {
   return 1
 }
 const totalLikes = (blogs) => {
