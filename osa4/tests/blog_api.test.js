@@ -5,6 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 describe('when there is initially some blogs saved', () => {
 
@@ -66,30 +67,71 @@ describe('when there is initially some blogs saved', () => {
     })
 
     test('a valid blog can be added', async () => {
+      await User.deleteMany({})
+
+      const saltRounds = 10
+      const passwordHash = await bcrypt.hash('salainen', saltRounds)
+
+      const userToAdd = new User({
+        username: 'mluukkai',
+        name: 'Matti',
+        passwordHash
+      })
+
+      const userToLogin = await userToAdd.save()
+
+      const result = await api
+        .post('/api/login')
+        .send({
+          username: userToLogin.username,
+          password: 'salainen'
+        })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const token = result.body.token
 
       const newBlog = {
-        title: 'async/await simplifies making async calls',
-        author: 'Luukkainen',
-        url: 'www.fso2020.io',
-        likes: Number.MAX_SAFE_INTEGER,
+        author: 'God',
+        title: 'John Ramp',
+        url: 'www.nevergointohappen.org',
+        likes: 666
       }
 
       await api
         .post('/api/blogs')
         .send(newBlog)
-        .expect(200)
+        .set({
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}` })
         .expect('Content-Type', /application\/json/)
-
-      const blogsAtEnd = await helper.blogsInDb()
-      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
-
-      const titles = blogsAtEnd.map(r => r.title)
-      expect(titles).toContainEqual(
-        'async/await simplifies making async calls'
-      )
     })
 
     test('blog without title is not added', async () => {
+      await User.deleteMany({})
+
+      const saltRounds = 10
+      const passwordHash = await bcrypt.hash('salainen', saltRounds)
+
+      const userToAdd = new User({
+        username: 'mluukkai',
+        name: 'Matti',
+        passwordHash
+      })
+
+      const userToLogin = await userToAdd.save()
+
+      const result = await api
+        .post('/api/login')
+        .send({
+          username: userToLogin.username,
+          password: 'salainen'
+        })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const token = result.body.token
+
       const newBlog = {
         author: 'God',
         url: 'www.nevergointohappen.org',
@@ -98,8 +140,10 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
-        .set('Authorization', 'brearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzYyODF9.XtcIIyKFPqQsM46MyZdDH-z2VZHDsNLLo1yCZ2ndUdc')
         .send(newBlog)
+        .set({
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}` })
         .expect(400)
       const response = await api.get('/api/blogs')
       expect(response.body.length).toBe(helper.initialBlogs.length)
@@ -109,12 +153,51 @@ describe('when there is initially some blogs saved', () => {
   describe('deletion of a blog', () => {
 
     test('a blog can be deleted', async () => {
+      await User.deleteMany({})
+
+      const saltRounds = 10
+      const passwordHash = await bcrypt.hash('salainen', saltRounds)
+
+      const userToAdd = new User({
+        username: 'mluukkai',
+        name: 'Matti',
+        passwordHash
+      })
+
+      const userToLogin = await userToAdd.save()
+
+      const result = await api
+        .post('/api/login')
+        .send({
+          username: userToLogin.username,
+          password: 'salainen'
+        })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const token = result.body.token
+
+      const newBlog = {
+        author: 'God',
+        title: 'John Ramp',
+        url: 'www.nevergointohappen.org',
+        likes: 666
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .set({
+          'Content-Type': 'application/json',
+          Authorization: `bearer ${token}` })
+        .expect('Content-Type', /application\/json/)
+
       const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
+      const blogToDelete = blogsAtStart[helper.initialBlogs]
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
-        .set('Authorization', 'brearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzYyODF9.XtcIIyKFPqQsM46MyZdDH-z2VZHDsNLLo1yCZ2ndUdc')
+        .set({ Authorization: `bearer ${token}` })
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -147,7 +230,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
-        .set('Authorization', 'brearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzYyODF9.XtcIIyKFPqQsM46MyZdDH-z2VZHDsNLLo1yCZ2ndUdc')
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzYyODF9.XtcIIyKFPqQsM46MyZdDH-z2VZHDsNLLo1yCZ2ndUdc')
         .send(newBlog)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -172,7 +255,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
-        .set('Authorization', 'brearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5NzYyODF9.XtcIIyKFPqQsM46MyZdDH-z2VZHDsNLLo1yCZ2ndUdc')
+        .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI1ZTRhY2I0NjJmMGVlYzE2NjRkOGY0YjEiLCJpYXQiOjE1ODE5OTI0NTB9.SVswVwW0z3lbFz3_yFHq9h62rxtolV4doJJvxocNuYg')
         .send(newBlog)
         .expect(400)
       const response = await helper.blogsInDb()
