@@ -60,6 +60,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const addedBlog = await blogService.create(blogObject)
+      console.log(addedBlog)
       setBlogs(blogs.concat(addedBlog))
       setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       handleErrorMessage()
@@ -96,8 +97,7 @@ const App = () => {
     const blogToRemove = blogs.find(blog => blog.id === id)
     if(window.confirm(`Remove ${blogToRemove.title} by ${blogToRemove.author}`)){
       try {
-        const removedBlog = await blogService.remove(id)
-        console.log(removedBlog)
+        await blogService.remove(id)
         setBlogs(blogs.filter(blog => blog.id !== id))
       } catch (exeption) {
         setErrorMessage('Blog was already removed')
