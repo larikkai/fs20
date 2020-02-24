@@ -6,6 +6,7 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
@@ -100,7 +101,7 @@ const App = () => {
         await blogService.remove(id)
         setBlogs(blogs.filter(blog => blog.id !== id))
       } catch (exeption) {
-        setErrorMessage('Blog was already removed')
+        setErrorMessage('Unauthorized')
         setStyle('error')
         handleErrorMessage()
       }
@@ -110,7 +111,7 @@ const App = () => {
   const blogFormRef = React.createRef()
 
   const blogForm = () => (
-    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+    <Togglable id="new-blog" buttonLabel='new blog' ref={blogFormRef}>
       <BlogForm createBlog={addBlog}/>
     </Togglable>
   )
@@ -127,15 +128,13 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification message={errorMessage} style={style} />
-        <Togglable buttonLabel='login'>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
       </div>
     )
   }
@@ -144,7 +143,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={errorMessage} style={style}/>
       <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
+      <button id="logout-button" onClick={handleLogout}>logout</button>
       {blogForm()}
       {blogs.map((blog, i) =>
         <Blog
