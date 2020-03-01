@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import AnecdoteList from './components/AnecdoteList'
 import NewAnecdote from './components/AnecdoteForm'
 import Notification from './components/Notification'
@@ -8,7 +8,7 @@ import { initializeAnecdotes } from './reducers/anecdoteReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  
+
   useEffect(() => {
     dispatch(initializeAnecdotes())
   }, [dispatch])

@@ -1,15 +1,14 @@
 import React from 'react'
 import { createAnecdote } from '../reducers/anecdoteReducer'
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 
-const NewAnecdote = () => {
-  const dispatch = useDispatch()
+const NewAnecdote = (props) => {
 
   const addAnecdote = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch(createAnecdote(content))
+    props.createAnecdote(content)
   }
   return (
     <div>
@@ -21,4 +20,8 @@ const NewAnecdote = () => {
     </div>
   )
 }
-export default NewAnecdote
+
+export default connect(
+  null,
+  { createAnecdote }
+)(NewAnecdote)
