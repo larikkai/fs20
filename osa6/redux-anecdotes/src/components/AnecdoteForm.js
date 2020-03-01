@@ -1,10 +1,8 @@
 import React from 'react'
-import {
-    createAnecdote
-  } from '../reducers/anecdoteReducer'
+import { createAnecdote } from '../reducers/anecdoteReducer'
 import { useDispatch } from 'react-redux'
 
-const NewAnecdote = (props) => {
+const NewAnecdote = () => {
   const dispatch = useDispatch()
 
   const addAnecdote = (event) => {

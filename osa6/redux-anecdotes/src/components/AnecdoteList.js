@@ -1,7 +1,5 @@
 import React from 'react'
-import {
-  voteAnecdote
-} from '../reducers/anecdoteReducer'
+import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { notificationChange } from '../reducers/notificationReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
