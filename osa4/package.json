@@ -24,14 +24,14 @@
     "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
+    "acorn": ">=7.1.1",
     "cross-env": "^7.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.3",
-    "jest": "^25.1.0",
-    "nodemon": "^2.0.2",
-    "supertest": "^4.0.2",
+    "jest": "^28.1.1",
     "minimist": ">=1.2.2",
-    "acorn": ">=7.1.1"
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"
